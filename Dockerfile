@@ -1,16 +1,21 @@
 FROM gliderlabs/alpine:3.4
 MAINTAINER Peter Waller <p@pwaller.net>
 
+ENV FUSE_VERSION 2.9.7
 RUN apk --update add --virtual build-dependencies --no-cache \
         build-base \
         ca-certificates \
         wget \
+        gnupg \
  && update-ca-certificates \
  && rm -rf /var/cache/apk/* \
  && cd / \
- && wget http://github.com/libfuse/libfuse/releases/download/fuse_2_9_5/fuse-2.9.5.tar.gz \
- && tar zxf fuse-2.9.5.tar.gz \
- && cd fuse-2.9.5 \
+ && wget https://github.com/libfuse/libfuse/releases/download/fuse-${FUSE_VERSION}/fuse-${FUSE_VERSION}.tar.gz \
+ && wget https://github.com/libfuse/libfuse/releases/download/fuse-${FUSE_VERSION}/fuse-${FUSE_VERSION}.tar.gz.asc \
+ && gpg --keyserver hkps.pool.sks-keyservers.net --recv-key 3C4E599F \
+ && gpg fuse-${FUSE_VERSION}.tar.gz.asc \
+ && tar zxf fuse-${FUSE_VERSION}.tar.gz \
+ && cd fuse-${FUSE_VERSION} \
  && ./configure \
  && make -C util LDFLAGS="-all-static -Wl,-v -Wl,--strip-all" V=1 fusermount \
  && cp util/fusermount /usr/local/bin \
