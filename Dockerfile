@@ -1,4 +1,4 @@
-FROM gliderlabs/alpine:3.3
+FROM gliderlabs/alpine:3.4
 MAINTAINER Peter Waller <p@pwaller.net>
 
 ## Install build dependencies
